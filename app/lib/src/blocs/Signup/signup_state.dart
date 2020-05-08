@@ -2,6 +2,7 @@ part of 'signup_bloc.dart';
 
 @immutable
 class SignupState {
+  final bool isFullNameValid;
   final bool isEmailValid;
   final bool isPasswordValid;
   final bool isConfirmPasswordValid;
@@ -9,9 +10,10 @@ class SignupState {
   final bool isSuccess;
   final bool isFailure;
 
-  bool get isFormValid => isEmailValid && isPasswordValid && isConfirmPasswordValid;
+  bool get isFormValid => isEmailValid && isPasswordValid && isConfirmPasswordValid && isFullNameValid;
 
   SignupState({
+    @required this.isFullNameValid,
     @required this.isEmailValid,
     @required this.isPasswordValid,
     @required this.isConfirmPasswordValid,
@@ -22,6 +24,7 @@ class SignupState {
 
   factory SignupState.empty() {
     return SignupState(
+      isFullNameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isConfirmPasswordValid: true,
@@ -33,6 +36,7 @@ class SignupState {
 
   factory SignupState.loading() {
     return SignupState(
+      isFullNameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isConfirmPasswordValid: true,
@@ -44,6 +48,7 @@ class SignupState {
 
   factory SignupState.failure() {
     return SignupState(
+      isFullNameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isConfirmPasswordValid: true,
@@ -55,6 +60,7 @@ class SignupState {
 
   factory SignupState.success() {
     return SignupState(
+      isFullNameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isConfirmPasswordValid: true,
@@ -65,11 +71,13 @@ class SignupState {
   }
 
   SignupState update({
+    bool isFullNameValid,
     bool isEmailValid,
     bool isPasswordValid,
     bool isConfirmPasswordValid,
   }) {
     return copyWith(
+      isFullNameValid: isFullNameValid,
       isEmailValid: isEmailValid,
       isPasswordValid: isPasswordValid,
       isConfirmPasswordValid: isConfirmPasswordValid,
@@ -80,6 +88,7 @@ class SignupState {
   }
 
   SignupState copyWith({
+    bool isFullNameValid,
     bool isEmailValid,
     bool isPasswordValid,
     bool isConfirmPasswordValid,
@@ -89,6 +98,7 @@ class SignupState {
     bool isFailure, 
   }) {
     return SignupState(
+      isFullNameValid: isFullNameValid ?? this.isFullNameValid,
       isEmailValid: isEmailValid ?? this.isEmailValid,
       isPasswordValid: isPasswordValid ?? this.isPasswordValid,
       isConfirmPasswordValid: isConfirmPasswordValid ?? this.isConfirmPasswordValid,
@@ -101,6 +111,7 @@ class SignupState {
   @override
   String toString() {
     return '''SignupState {
+      isFullNameValid: $isFullNameValid,
       isEmailValid: $isEmailValid,
       isPasswordValid: $isPasswordValid,
       isConfirmPassword: $isConfirmPasswordValid,

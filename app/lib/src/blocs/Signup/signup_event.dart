@@ -8,6 +8,18 @@ abstract class SignupEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class FullNameChanged extends SignupEvent {
+  final String fullName;
+
+  FullNameChanged({@required this.fullName});
+
+  @override
+  String toString() => 'fullNameChanged { fullName :$fullName }';
+
+  @override
+  List<Object> get props => [fullName];
+}
+
 class EmailChanged extends SignupEvent {
   final String email;
 
@@ -46,10 +58,12 @@ class ConfirmPasswordChanged extends SignupEvent {
 }
 
 class Submitted extends SignupEvent {
+  final String fullName;
   final String email;
   final String password;
+  final String confirmPassword;
 
-  Submitted({@required this.email, @required this.password}): assert(email != null, password != null);
+  Submitted({@required this.fullName, @required this.email, @required this.password, @required this.confirmPassword}): assert(fullName != null && email != null && password != null && confirmPassword != null);
 
   @override
   String toString() {
@@ -57,5 +71,5 @@ class Submitted extends SignupEvent {
   }
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [fullName, email, password, confirmPassword];
 }

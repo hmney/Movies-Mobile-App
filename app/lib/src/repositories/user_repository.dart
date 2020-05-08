@@ -31,11 +31,21 @@ class UserRepository {
     );
   }
 
-  Future<void> signUp({String email, String password}) async {
+  Future<void> signUpWithCredentials({String email, String password}) async {
     return await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
+  }
+
+  Future<void> sendEmailVerification() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    user.sendEmailVerification();
+  }
+
+  Future<bool> isEmailVerified() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    return user.isEmailVerified;
   }
 
   Future<void> signOut() async {

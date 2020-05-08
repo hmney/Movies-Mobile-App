@@ -21,7 +21,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   Stream<SignupState> mapEventToState(
     SignupEvent event,
   ) async* {
-    if (event is EmailChanged) {
+    if (event is FullNameChanged) {
+      yield* _mapFullNameChangedToState(event.fullName);
+    } else if (event is EmailChanged) {
       yield* _mapEmailChangedToState(event.email);
     } else if (event is PasswordChanged) {
       yield* _mapPasswordChangedToState(event.password);
@@ -29,8 +31,14 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       yield* _mapConfirmPasswordChangedToState(
           event.confirmPassword, event.password);
     } else if (event is Submitted) {
-      yield* _mapFormSubmittedToState(event.email, event.password);
+      yield* _mapFormSubmittedToState(event.fullName, event.email, event.password, event.confirmPassword);
     }
+  }
+
+  Stream<SignupState> _mapFullNameChangedToState(String fullName) async* {
+    yield state.update(
+      isFullNameValid: Validators.isValidFullName(fullName),
+    );
   }
 
   Stream<SignupState> _mapEmailChangedToState(String email) async* {
@@ -53,13 +61,15 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   }
 
   Stream<SignupState> _mapFormSubmittedToState(
+    String fullName,
     String email,
     String password,
+    String confirmPassword
   ) async* {
     yield SignupState.loading();
-    if (email != null && password != null) {
+    if (fullName != null && email != null && password != null && confirmPassword != null) {
       try {
-        await _userRepository.signUp(
+        await _userRepository.signUpWithCredentials(
           email: email,
           password: password,
         );

@@ -120,6 +120,17 @@ class _LoginFormState extends State<LoginForm> {
         }
         if (state.isSuccess) {
           BlocProvider.of<AuthBloc>(context).add(LoggedIn());
+          Scaffold.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text('Login succeed'), Icon(Icons.check)],
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
         }
       },
       child: BlocBuilder(
@@ -266,7 +277,6 @@ class _LoginFormState extends State<LoginForm> {
         textColor: Colors.white,
         color: Theme.of(context).accentColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        // onPressed: isLoginButtonEnabled(state) ? _onFormSubmitted : null,
         onPressed: _onFormSubmitted,
       ),
     );
@@ -288,17 +298,22 @@ class _LoginFormState extends State<LoginForm> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                    child: IconButton(
-                  onPressed: () {},
-                  icon: Image.asset('assets/images/facebookIcon.png'),
-                  iconSize: 35,
-                )),
+                  child: IconButton(
+                    icon: Image.asset('assets/images/facebookIcon.png'),
+                    iconSize: 35,
+                    onPressed: () {},
+                  ),
+                ),
                 Container(
-                    child: IconButton(
-                  onPressed: () {},
-                  icon: Image.asset('assets/images/googleIcon.png'),
-                  iconSize: 35,
-                )),
+                  child: IconButton(
+                    highlightColor: Colors.black,
+                    icon: Image.asset('assets/images/googleIcon.png'),
+                    iconSize: 35,
+                    onPressed: () {
+                      _loginBloc.add(LoginWithGooglePressed());
+                    },
+                  ),
+                ),
               ],
             ),
           ),

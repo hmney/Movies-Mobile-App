@@ -2,7 +2,10 @@ part of 'auth_bloc.dart';
 
 @immutable
 abstract class AuthEvent extends Equatable {
-  AuthEvent([List props = const []]);
+  AuthEvent();
+  
+  @override
+  List<Object> get props => [];
 }
 
 class AppStarted extends AuthEvent {

@@ -55,11 +55,13 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
   bool _obscurePassword;
   bool _obscureConfirmPassword;
 
@@ -71,6 +73,7 @@ class _SignupFormState extends State<SignupForm> {
     _obscurePassword = true;
     _obscureConfirmPassword = true;
     _signupBloc = BlocProvider.of<SignupBloc>(context);
+    _fullNameController.addListener(_onFullNameChanged);
     _emailController.addListener(_onEmailChanged);
     _passwordController.addListener(_onPasswordChanged);
     _confirmPasswordController.addListener(_onConfirmPasswordChanged);
@@ -136,11 +139,11 @@ class _SignupFormState extends State<SignupForm> {
                     child: Column(
                       children: <Widget>[
                         _createAnAccount(context),
+                        _fullNameTextField(context, state),
                         _emailTextField(context, state),
                         _passwordTextField(context, state),
                         _confirmPasswordTextField(context, state),
                         _signupButton(context, state),
-                        _socialMediaSignup(context)
                       ],
                     ),
                   ),
@@ -151,10 +154,15 @@ class _SignupFormState extends State<SignupForm> {
 
   @override
   void dispose() {
+    _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _onFullNameChanged() {
+    _signupBloc.add(FullNameChanged(fullName: _fullNameController.text));
   }
 
   void _onEmailChanged() {
@@ -180,8 +188,10 @@ class _SignupFormState extends State<SignupForm> {
   void _onFormSubmitted() {
     _signupBloc.add(
       Submitted(
+        fullName: _fullNameController.text,
         email: _emailController.text,
         password: _passwordController.text,
+        confirmPassword: _confirmPasswordController.text
       ),
     );
   }
@@ -197,10 +207,36 @@ class _SignupFormState extends State<SignupForm> {
     );
   }
 
-  Widget _emailTextField(BuildContext context, SignupState state) {
+  Widget _fullNameTextField(BuildContext context, SignupState state) {
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.fromLTRB(35, 0, 35, 5),
+      child: TextFormField(
+        controller: _fullNameController,
+        decoration: InputDecoration(
+          labelText: 'Full name',
+          labelStyle: TextStyle(color: Theme.of(context).accentColor),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).accentColor),
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              gapPadding: 0),
+          border: OutlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              gapPadding: 0),
+          hintStyle: TextStyle(color: Theme.of(context).accentColor),
+        ),
+        validator: (_) {
+          return !state.isFullNameValid ? 'Invalid Name' : null;
+        },
+      ),
+    );
+  }
+
+  Widget _emailTextField(BuildContext context, SignupState state) {
+    return Container(
+      alignment: Alignment.center,
+      margin: EdgeInsets.fromLTRB(35, 10, 35, 5),
       child: TextFormField(
         controller: _emailController,
         decoration: InputDecoration(
@@ -303,7 +339,7 @@ class _SignupFormState extends State<SignupForm> {
 
   Widget _signupButton(BuildContext context, SignupState state) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 40, 0, 20),
+      margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
       width: 290,
       height: 55,
       child: RaisedButton(
@@ -312,41 +348,6 @@ class _SignupFormState extends State<SignupForm> {
         color: Theme.of(context).accentColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         onPressed: _onFormSubmitted,
-      ),
-    );
-  }
-
-  Widget _socialMediaSignup(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(20),
-      child: Column(
-        children: <Widget>[
-          Container(
-            child: Text(
-              'Or sign-up with',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                    child: IconButton(
-                  onPressed: () {},
-                  icon: Image.asset('assets/images/facebookIcon.png'),
-                  iconSize: 35,
-                )),
-                Container(
-                    child: IconButton(
-                  onPressed: () {},
-                  icon: Image.asset('assets/images/googleIcon.png'),
-                  iconSize: 35,
-                )),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

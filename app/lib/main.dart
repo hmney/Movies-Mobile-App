@@ -1,7 +1,7 @@
 import 'package:app/src/blocs/Auth/auth_bloc.dart';
 import 'package:app/src/blocs/simple_bloc_delegate.dart';
 import 'package:app/src/repositories/user_repository.dart';
-import 'package:app/src/views/Home/home.dart';
+import 'package:app/src/views/Home/home_screen.dart';
 import 'package:app/src/views/Login/login_screen.dart';
 import 'package:app/src/views/SplashScreen/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
                 return LoginScreen(userRepository: _userRepository);
               }
               if (state is Authenticated) {
-                return Home();
+                return HomeScreen(userRepository: _userRepository);
               }
               return SplashScreen();
             },
