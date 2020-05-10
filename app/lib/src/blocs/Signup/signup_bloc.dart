@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:app/src/data/repositories/user_repository.dart';
 import 'package:app/src/helpers/validators.dart';
-import 'package:app/src/repositories/user_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';

@@ -1,6 +1,6 @@
+import 'package:app/src/UI/Signup/signup_screen.dart';
 import 'package:app/src/blocs/Auth/auth_bloc.dart';
-import 'package:app/src/repositories/user_repository.dart';
-import 'package:app/src/views/Signup/signup_screen.dart';
+import 'package:app/src/data/repositories/user_repository.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/blocs/Login/login_bloc.dart';

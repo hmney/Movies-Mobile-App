@@ -1,9 +1,10 @@
+import 'package:app/src/UI/Home/home_screen.dart';
+import 'package:app/src/UI/Login/login_screen.dart';
+import 'package:app/src/UI/SplashScreen/splash_screen.dart';
 import 'package:app/src/blocs/Auth/auth_bloc.dart';
 import 'package:app/src/blocs/simple_bloc_delegate.dart';
-import 'package:app/src/repositories/user_repository.dart';
-import 'package:app/src/views/Home/home_screen.dart';
-import 'package:app/src/views/Login/login_screen.dart';
-import 'package:app/src/views/SplashScreen/splash_screen.dart';
+import 'package:app/src/data/repositories/repositories.dart';
+import 'package:app/src/data/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final UserRepository _userRepository = UserRepository();
+  final MoviesRepository _moviesRepository = MoviesRepository();
   AuthBloc _authBloc;
 
   @override
@@ -56,7 +58,7 @@ class _MyAppState extends State<MyApp> {
                 return LoginScreen(userRepository: _userRepository);
               }
               if (state is Authenticated) {
-                return HomeScreen(userRepository: _userRepository);
+                return HomeScreen(moviesRepository: _moviesRepository);
               }
               return SplashScreen();
             },

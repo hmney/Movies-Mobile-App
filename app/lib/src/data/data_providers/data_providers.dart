@@ -1,0 +1,1 @@
+export 'movies_api_provider.dart';
