@@ -12,9 +12,11 @@ class MoviesApiProvider {
 
   Future<List<GenresModel>> fetchGenresList() async {
     try {
-      final response = await client.get("$_baseUrl/genre/movie/list?api_key=$_apiKey");
+      final response =
+          await client.get("$_baseUrl/genre/movie/list?api_key=$_apiKey");
       if (response.statusCode == 200) {
-        return GenresModel.fromJsonArray(json.decode(response.body));
+        var results = json.decode(response.body);
+        return GenresModel.fromJsonArray(results['genres']);
       } else {
         throw Exception('Failed to fetch genres');
       }
@@ -26,7 +28,9 @@ class MoviesApiProvider {
 
   Future<List<MoviesModel>> fetchMoviesByGenre(String genreId) async {
     try {
-      final response = await client.get("$_baseUrl/discover/movie?api_key=$_apiKey&sort_by=popularity.desc&with_genres=$genreId");
+      final response = await client.get(
+        "$_baseUrl/discover/movie?api_key=$_apiKey&sort_by=popularity.desc&with_genres=$genreId",
+      );
       if (response.statusCode == 200) {
         var result = json.decode(response.body);
         return MoviesModel.fromJsonArray(result['results']);
@@ -41,7 +45,8 @@ class MoviesApiProvider {
 
   Future<MoviesModel> fetchMovieDetails(int movieId) async {
     try {
-      final response = await client.get("$_baseUrl/movie/$movieId?api_key=$_apiKey");
+      final response =
+          await client.get("$_baseUrl/movie/$movieId?api_key=$_apiKey");
       if (response.statusCode == 200) {
         return MoviesModel.fromJson(json.decode(response.body));
       } else {
@@ -55,7 +60,8 @@ class MoviesApiProvider {
 
   Future<List<CastsModel>> fetchMovieCredits(int movieId) async {
     try {
-      final response = await client.get("$_baseUrl/movie/$movieId/credits?api_key=$_apiKey");
+      final response =
+          await client.get("$_baseUrl/movie/$movieId/credits?api_key=$_apiKey");
       if (response.statusCode == 200) {
         var results = json.decode(response.body);
         return CastsModel.fromJsonArray(results['cast']);
@@ -70,7 +76,8 @@ class MoviesApiProvider {
 
   Future<List<MoviesModel>> fetchMovieRecommendations(int movieId) async {
     try {
-      final response = await client.get("$_baseUrl/movie/$movieId/recommendations?api_key=$_apiKey");
+      final response = await client
+          .get("$_baseUrl/movie/$movieId/recommendations?api_key=$_apiKey");
       if (response.statusCode == 200) {
         var results = json.decode(response.body);
         return MoviesModel.fromJsonArray(results['results']);
@@ -85,7 +92,8 @@ class MoviesApiProvider {
 
   Future<List<MoviesModel>> fetchMoviebyName(String movieName) async {
     try {
-      final response = await client.get("$_baseUrl/search/movie?api_key=$_apiKey?query=$movieName");
+      final response = await client
+          .get("$_baseUrl/search/movie?api_key=$_apiKey&query=$movieName");
       if (response.statusCode == 200) {
         var results = json.decode(response.body);
         return MoviesModel.fromJsonArray(results['results']);
@@ -98,18 +106,18 @@ class MoviesApiProvider {
     }
   }
 
-  Future<TrailersModel> fetchMovieTraliers(int movieId) async {
+  Future<List<TrailersModel>> fetchMovieTraliers(int movieId) async {
     try {
-      final response = await client.get("$_baseUrl/movie/$movieId/videos?api_key=$_apiKey");
+      final response =
+          await client.get("$_baseUrl/movie/$movieId/videos?api_key=$_apiKey");
       if (response.statusCode == 200) {
-        return TrailersModel.fromJson(json.decode(response.body));
+        var result = json.decode(response.body);
+        return TrailersModel.fromJsonArray(result['results']);
       } else {
         throw Exception('Failed to fetch trailers');
       }
-    } catch(e) {
+    } catch (e) {
       throw Exception('Something went wrong, please try again.');
     }
   }
-
-  
 }

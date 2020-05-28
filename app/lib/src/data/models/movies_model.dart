@@ -1,9 +1,7 @@
-import 'package:app/src/data/models/genres_model.dart';
-
 class MoviesModel {
   final int id;
   final String name;
-  final List<dynamic> genres;
+  final List<int> genres;
   final dynamic rating;
   final String posterPath;
   final String overview;
@@ -14,9 +12,9 @@ class MoviesModel {
     return MoviesModel(
       id: json['id'],
       name: json['original_title'],
-      genres: GenresModel.fromJsonArray(json['genres']),
+      genres: json['genre_ids'].cast<int>(),
       rating: json['vote_average'],
-      posterPath: 'https://image.tmdb.org/t/p/w500' + json['poster_path'],
+      posterPath: json['poster_path'],
       overview: json['overview'],
     );
   }

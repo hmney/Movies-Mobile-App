@@ -4,7 +4,7 @@ class TrailersModel {
   final String name;
   final String site;
   final String type;
-  String thumbnail;
+  final int size;
 
   TrailersModel(
       {this.id,
@@ -12,18 +12,22 @@ class TrailersModel {
       this.name,
       this.site,
       this.type,
-      this.thumbnail = ''});
+      this.size});
 
-  factory TrailersModel.fromJson(Map<dynamic, dynamic> json) {
+  factory TrailersModel.fromJson(Map<String, dynamic> json) {
     return TrailersModel(
       id: json['id'],
       key: json['key'],
       name: json['name'],
       site: json['site'],
       type: json['type'],
-      thumbnail: json['site'].toString().toLowerCase() == 'youtube'
-          ? 'http://img.youtube.com/vi/' + json['key'] + '/hqdefault.jpg'
-          : '',
+      size: json['size']
     );
+  }
+
+  static List<TrailersModel> fromJsonArray(List jsonArray) {
+    return jsonArray?.map((item) {
+      return TrailersModel.fromJson(item);
+    })?.toList();
   }
 }

@@ -9,9 +9,9 @@ class CastsModel {
   factory CastsModel.fromJson(Map<String, dynamic> json) {
     return CastsModel(
       id: json['id'],
-      castId: json['castId'],
+      castId: json['cast_id'],
       name: json['name'],
-      profilePath: 'https://image.tmdb.org/t/p/w200' + json['profile_path']?? ''
+      profilePath: json['profile_path'] != null ? 'https://image.tmdb.org/t/p/w200' + json['profile_path'] : null
     );
   }
   

@@ -8,35 +8,12 @@ abstract class MovieEvent extends Equatable {
   List get props => [];
 }
 
-// class FetchHomeMovies extends MovieEvent {
-//   FetchHomeMovies();
+class FetchMovieDetails extends MovieEvent {
+  final MoviesModel moviesDetails;
 
-//   @override
-//   List get props => [];
-// }
+  FetchMovieDetails({@required this.moviesDetails})
+      : assert(moviesDetails != null);
 
-// class FetchGenreMovies extends MovieEvent {
-//   final String genreId;
-//   FetchGenreMovies({@required this.genreId}) : assert(genreId != null);
-
-//   @override
-//   List get props => [genreId];  
-// }
-
-// class FetchMovieDetails extends MovieEvent {
-//   final int movieId;
-
-//   FetchMovieDetails({@required this.movieId}) : assert(movieId != null);
-
-//   @override
-//   List get props => [movieId]; 
-// }
-
-// class SearchMovie extends MovieEvent {
-//   final String movieName;
-
-//   SearchMovie({@required this.movieName}) : assert(movieName != null);
-
-//   @override
-//   List get props => [movieName]; 
-// }
+  @override
+  List get props => [moviesDetails];
+}

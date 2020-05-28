@@ -16,15 +16,14 @@ class MoviesRepository {
     return _moviesApiProvider.fetchMoviesByGenre(genreId);
   }
 
-  Future<List<List<MoviesModel>>> getMoviesforHomePage() async {
-    final genres = await getGenresList();
-    print(genres.length);
-    final List<List<MoviesModel>> homePageMovies = List();
+  Future<List<List<MoviesModel>>> getMoviesforHomePage(List<GenresModel> genres) async {
+    final List<List<MoviesModel>> homePageMovies = [];
 
-    genres.forEach((genre) async {
-      final List<MoviesModel> moviesList = await getMoviesByGenre(genre.name.toString());
+    for (var i = 0; i < genres.length; i++) {
+      final List<MoviesModel> moviesList =
+          await getMoviesByGenre(genres[i].id.toString());
       homePageMovies.add(moviesList);
-    });
+    }
     return homePageMovies;
   }
 
@@ -40,11 +39,11 @@ class MoviesRepository {
     return _moviesApiProvider.fetchMovieRecommendations(movieId);
   }
 
-  Future<List<MoviesModel>> fetchMoviebyName(String movieName) async {
+  Future<List<MoviesModel>> getMoviebyName(String movieName) async {
     return _moviesApiProvider.fetchMoviebyName(movieName);
   }
 
-  Future<TrailersModel> fetchMovieTraliers(int movieId) async {
+  Future<List<TrailersModel>> getMovieTraliers(int movieId) async {
     return _moviesApiProvider.fetchMovieTraliers(movieId);
   }
 }

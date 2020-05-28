@@ -1,5 +1,7 @@
+import 'package:app/src/UI/MovieDetails/movie_details_screen.dart';
+import 'package:app/src/UI/MoviesGenre/movies_genres.dart';
+import 'package:app/src/UI/Search/search_screen.dart';
 import 'package:app/src/blocs/Home/home_bloc.dart';
-import 'package:app/src/data/models/models.dart';
 import 'package:app/src/data/repositories/repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   MoviesRepository get _moviesRepository => widget._moviesRepository;
   HomeBloc _homeBloc;
-  
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +43,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: EdgeInsets.all(10),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return SearchScreenProvider(
+                          moviesRepository: _moviesRepository,
+                        );
+                      },
+                    ),
+                  );
+                },
                 child: Icon(
                   Icons.search,
                   size: 30,
@@ -50,13 +62,22 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
+        drawer: Drawer(
+          
+        ),
         body: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             if (state is HomeLoaded)
               return Container(
                 color: Colors.white,
-                child: ListView.builder(
-                  itemCount: state.movies.length,
+                child: ListView.separated(
+                  padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
+                  separatorBuilder: (context, index) {
+                    return SizedBox(
+                      height: 30,
+                    );
+                  },
+                  itemCount: state.genres.length,
                   itemBuilder: (context, index1) {
                     return Container(
                       child: Column(
@@ -68,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: EdgeInsets.all(10),
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Test',
+                                    state.genres[index1].name,
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Theme.of(context).accentColor,
@@ -79,11 +100,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Container(
                                   padding: EdgeInsets.all(15),
                                   alignment: Alignment.centerRight,
-                                  child: Text(
-                                    'See all',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).primaryColor,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                        return MoviesGenre(
+                                          genre: state.genres[index1],
+                                          moviesRepository: _moviesRepository,
+                                        );
+                                      }));
+                                    },
+                                    child: Text(
+                                      'See all',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -94,16 +126,41 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 142,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
+                              itemCount: state.movies[index1].length,
                               itemBuilder: (context, index2) {
-                                MoviesModel results =
-                                    state.movies[index1][index2];
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                                   width: 100,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) {
+                                            return MovieDetailsScreenProvider(
+                                              movie: state.movies[index1]
+                                                  [index2],
+                                              moviesRepository:
+                                                  _moviesRepository,
+                                            );
+                                          }),
+                                        );
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        child: (state.movies[index1][index2]
+                                                    .posterPath !=
+                                                null)
+                                            ? Image.network(
+                                                'http://image.tmdb.org/t/p/w185' +
+                                                    state.movies[index1][index2]
+                                                        .posterPath)
+                                            : Container(
+                                                color: Colors.grey,
+                                              ),
+                                      ),
+                                    ),
                                   ),
-                                  child: Text(results.name),
                                 );
                               },
                             ),
@@ -116,10 +173,15 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             if (state is HomeLoading)
               return Container(
-                child: CircularProgressIndicator(),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                ),
               );
             return Container(
-              child: CircularProgressIndicator(),
+              width: 0,
+              height: 0,
             );
           },
         ),
@@ -133,228 +195,3 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 }
-
-
-class GenreMoviesList extends StatefulWidget {
-  @override
-  _GenreMoviesListState createState() => _GenreMoviesListState();
-}
-
-class _GenreMoviesListState extends State<GenreMoviesList> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-// class HomeScreen extends StatefulWidget {
-//   final UserRepository _userRepository;
-
-//   HomeScreen({Key key, @required UserRepository userRepository})
-//       : assert(userRepository != null),
-//         _userRepository = userRepository,
-//         super(key: key);
-//   @override
-//   _HomeScreenState createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         leading: Image(
-//           image: AssetImage('assets/images/HomeLogo.png'),
-//         ),
-//         backgroundColor: Theme.of(context).primaryColor,
-//         actions: [
-//           Padding(
-//             padding: EdgeInsets.all(10),
-//                       child: GestureDetector(
-//               onTap: () {},
-//               child: Icon(
-//                 Icons.search,
-//                 size: 30,
-//               ),
-//             ),
-//           )
-//         ],
-//       ),
-//       body: Container(
-//         color: Colors.white,
-//         child: ListView(
-//           scrollDirection: Axis.vertical,
-//           children: <Widget>[
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             SizedBox(
-//               width: 10,
-//             ),
-//             _horzientalWidget(context),
-//             Padding(padding: EdgeInsets.all(10)),
-//           ],
-//         ),
-//       ),
-//       bottomNavigationBar: _bottomNavigationBar(context),
-//     );
-//   }
-
-//   Widget _bottomNavigationBar(BuildContext context) {
-//     return BottomNavigationBar(
-//       backgroundColor: Colors.white,
-//       onTap: (int) {},
-//       currentIndex1: 0,
-//       items: [
-//         BottomNavigationBarItem(
-//           icon: Icon(Icons.home),
-//           title: Text('MOVIES'),
-//         ),
-//         BottomNavigationBarItem(
-//           icon: Icon(Icons.mail),
-//           title: Text('TV'),
-//         ),
-//         BottomNavigationBarItem(
-//           icon: Icon(Icons.person),
-//           title: Text('PROFILE'),
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget _horzientalWidget(BuildContext context) {
-//     return Container(
-//       child: Column(
-//         children: <Widget>[
-//           Container(
-//             child: Row(
-//               children: <Widget>[
-//                 Container(
-//                   padding: EdgeInsets.all(10),
-//                   alignment: Alignment.centerLeft,
-//                   child: Text(
-//                     'Drama',
-//                     style: TextStyle(
-//                       fontSize: 20,
-//                       color: Theme.of(context).accentColor,
-//                     ),
-//                   ),
-//                 ),
-//                 Spacer(),
-//                 Container(
-//                   padding: EdgeInsets.all(15),
-//                   alignment: Alignment.centerRight,
-//                   child: Text(
-//                     'See all',
-//                     style: TextStyle(
-//                       fontSize: 14,
-//                       color: Theme.of(context).primaryColor,
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           SizedBox(
-//             height: 142,
-//             child: ListView(
-//               scrollDirection: Axis.horizontal,
-//               children: <Widget>[
-//                 SizedBox(width: 5),
-//                 Container(
-//                   width: 100,
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 SizedBox(width: 5),
-//                 Container(
-//                   width: 100,
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 SizedBox(width: 5),
-//                 Container(
-//                   width: 100,
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 SizedBox(width: 5),
-//                 Container(
-//                   width: 100,
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 SizedBox(width: 5),
-//                 Container(
-//                   width: 100,
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 SizedBox(width: 5),
-//                 Container(
-//                   width: 100,
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 SizedBox(width: 5),
-//                 Container(
-//                   width: 100,
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 SizedBox(width: 5),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
